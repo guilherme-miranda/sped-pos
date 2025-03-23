@@ -63,7 +63,7 @@ class DanfcePos
             $xml = @file_get_contents($nfcexml);
         }
         if (empty($xml)) {
-            throw new \InvalidArgumentException('Não foi possível ler o documento.');
+            throw new \InvalidArgumentException('Nao foi possivel ler o documento.');
         }
         $nfe = simplexml_load_string($xml, null, LIBXML_NOCDATA);
         $this->protNFe = $nfe->protNFe;
@@ -106,7 +106,7 @@ class DanfcePos
     /**
      * Parte I - Emitente
      * Dados do emitente
-     * Campo Obrigatório
+     * Campo Obrigatorio
      */
     protected function parteI()
     {
@@ -135,8 +135,8 @@ class DanfcePos
     }
 
     /**
-     * Parte II - Informações Gerais
-     * Campo Obrigatório
+     * Parte II - Informacões Gerais
+     * Campo Obrigatorio
      */
     protected function parteII()
     {
@@ -145,7 +145,7 @@ class DanfcePos
         $this->printer->text("DANFCe - Documento Auxiliar da Nota Fiscal\nde Consumidor Eletronica\n");
         $this->printer->setEmphasis(false);
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
-        $this->printer->text("Não permite aproveitamento de crédito de ICMS.\n");
+        $this->printer->text("Nao permite aproveitamento de credito de ICMS.\n");
         $this->separador();
     }
 
@@ -156,9 +156,9 @@ class DanfcePos
     protected function parteIII()
     {
         $this->printer->setJustification(Printer::JUSTIFY_LEFT);
-        // Cabeçalho
+        // Cabecalho
         $this->printer->setEmphasis(true);
-        $this->printer->text("Cód.  Descrição          Qtd. Un.  Valor   Total\n");
+        $this->printer->text("Cod.  Descricao          Qtd. Un.  Valor   Total\n");
         // Itens da NFCe
         $this->printer->setEmphasis(false);
         $det = $this->nfce->infNFe->det;
@@ -228,7 +228,7 @@ class DanfcePos
 
     /**
      * Parte IV - Totais da Venda
-     * Campo Obrigatório
+     * Campo Obrigatorio
      */
     protected function parteIV()
     {
@@ -263,14 +263,14 @@ class DanfcePos
     }
 
     /**
-     * Parte V - Informação de tributos
-     * Campo Obrigatório
+     * Parte V - Informacao de tributos
+     * Campo Obrigatorio
      */
     protected function parteV()
     {
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
         $vTotTrib = (float) $this->nfce->infNFe->total->ICMSTot->vTotTrib;
-        $printimp = $this->strPad("Informação dos Tributos Incidentes:", 35, " ")
+        $printimp = $this->strPad("Informacao dos Tributos Incidentes:", 35, " ")
         . str_pad("R$" . number_format($vTotTrib, 2, ',', '.'), 13, " ", STR_PAD_LEFT);
         $this->printer->text($printimp . "\n");
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -293,29 +293,29 @@ class DanfcePos
     }
 
     /**
-     * Parte VII - Mensagem Fiscal e Informações da Consulta via Chave de Acesso
-     * Campo Obrigatório
+     * Parte VII - Mensagem Fiscal e Informacões da Consulta via Chave de Acesso
+     * Campo Obrigatorio
      */
     protected function parteVII()
     {
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
         $tpAmb = (int) $this->nfce->infNFe->ide->tpAmb;
         if ($tpAmb == 2) {
-            $this->printer->text("EMITIDA EM AMBIENTE DE HOMOLOGAÇÃO\nSEM VALOR FISCAL\n");
+            $this->printer->text("EMITIDA EM AMBIENTE DE HOMOLOGACAO\nSEM VALOR FISCAL\n");
         }
         $tpEmis = (int) $this->nfce->infNFe->ide->tpEmis;
         if ($tpEmis != 1) {
-            $this->printer->text("EMITIDA EM AMBIENTE DE CONTINGÊNCIA\n");
+            $this->printer->text("EMITIDA EM AMBIENTE DE CONTINGENCIA\n");
         }
         $nNF = (string) $this->nfce->infNFe->ide->nNF;
         $serie = (int) $this->nfce->infNFe->ide->serie;
         $dhEmi = (string) $this->nfce->infNFe->ide->dhEmi;
         $Id = (string) $this->nfce->infNFe->attributes()->{'Id'};
         $chave = substr($Id, 3, strlen($Id) - 3);
-        //$this->printer->text('Nr. ' . $nNF. ' Serie ' .$serie . ' Emissão ' .$dhEmi . ' via Consumidor');
+        //$this->printer->text('Nr. ' . $nNF. ' Serie ' .$serie . ' Emissao ' .$dhEmi . ' via Consumidor');
         $linha = new \stdClass();
         $linha->numero = $this->strPad("NFCe: " . preg_replace("/[^0-9]/", "", $nNF), 15);
-        $linha->serie = $this->strPad("Série: " . $serie, 10);
+        $linha->serie = $this->strPad("Serie: " . $serie, 10);
         $linha->data = $this->strPad(date('d/m/Y H:i:s', strtotime($dhEmi)), 23, ' ', STR_PAD_LEFT);
         $this->printer->text($linha->numero . $linha->serie . $linha->data . "\n");
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
@@ -327,14 +327,14 @@ class DanfcePos
     }
 
     /**
-     * Parte VIII - Informações sobre o Consumidor
+     * Parte VIII - Informacões sobre o Consumidor
      * Campo Opcional
      */
     protected function parteVIII()
     {
         $this->printer->setJustification(Printer::JUSTIFY_CENTER);
         if (!empty($this->protNFe->infProt->xMsg)) {
-            $this->printer->text("INFORMAÇÕES ADICIONAIS");
+            $this->printer->text("INFORMACÕES ADICIONAIS");
             $this->printer->feed(1);
             $this->printer->text($this->protNFe->infProt->xMsg);
             $this->printer->feed(1);
@@ -380,7 +380,7 @@ class DanfcePos
 
     /**
      * Parte IX - QRCode
-     * Campo Obrigatório
+     * Campo Obrigatorio
      */
     protected function parteIX()
     {
@@ -393,10 +393,10 @@ class DanfcePos
         if (!empty($this->protNFe)) {
             $nProt = (string) $this->protNFe->infProt->nProt;
             $dhRecbto = (string) $this->protNFe->infProt->dhRecbto;
-            $this->printer->text("Protocolo de autorização: " . $nProt . "\n");
+            $this->printer->text("Protocolo de autorizacao: " . $nProt . "\n");
         } else {
             $this->printer->setEmphasis(true);
-            $this->printer->text("NOTA FISCAL INVÁLIDA - SEM PROTOCOLO DE AUTORIZAÇÃO\n");
+            $this->printer->text("NOTA FISCAL INVALIDA - SEM PROTOCOLO DE AUTORIZACAO\n");
             $this->printer->setEmphasis(false);
         }
     }
@@ -418,14 +418,14 @@ class DanfcePos
             '11' => 'Vale Refeicao',
             '12' => 'Vale Presente',
             '13' => 'Vale Combustivel',
-            '15' => 'Boleto Bancário',
-            '16' => 'Depósito Bancario',
-            '17' => 'PIX Dinâmico',
+            '15' => 'Boleto Bancario',
+            '16' => 'Deposito Bancario',
+            '17' => 'PIX Dinamico',
             '18' => 'Transferencia Carteira Digital',
-            '19' => 'Prog.Fidel., CashBack, Créd.Virt.',
-            '20' => 'PIX Estático',
+            '19' => 'Prog.Fidel., CashBack, Cred.Virt.',
+            '20' => 'PIX Estatico',
             '21' => 'Credito em loja',
-            '22' => 'Pag.Eletr. Não Informado (Falha de hardware)',
+            '22' => 'Pag.Eletr. Nao Informado (Falha de hardware)',
             '90' => 'Sem Pagamento',
             '99' => 'Outros',
 
